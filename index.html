@@ -50,14 +50,17 @@ The depth can be estimated as follows:
 <br><br>
 Where <b>P<sub>0</sub></b> is the atmospheric pressure above the water surface.<br>
 Gravity constant <b>g</b> on the sea level depends on geographic latitude <b>&phi;</b>
-and calculates from the WGS84 gravity formula
-<a href="https://en.wikipedia.org/wiki/Theoretical_gravity">[1]</a>
-<a href="http://earth-info.nga.mil/GandG/publications/tr8350.2/wgs84fin.pdf">[2]</a>
+and calculates from the WGS84 gravity formula<sup><a href="#footnote1">[1]</a></sup><sup><a href="#footnote2">[2]</a></sup>
 <br><br>
-In this simplified calculation we calculate three values for the depth:<br>
-- one (<b>h<sub>1000</sub></b>), calculated assuming <b>&rho;=1000 kg/m<sup>3</sup></b><br>
-- second (<b>h<sub>s</sub></b>) with use the water density at the midpoint - where the pressure is half of a given<br>
-- third, (<b>h<sub>&sigma;</sub></b>) - with dividing the pressure range (<b>P-P<sub>0</sub></b>)
+
+In this simplified calculation we calculate a few values for the depth:<br>
+- <b>h<sub>swg</sub></b>, for mean density of seawater and constant gravity acceleration<br>
+- <b>h<sub>sw</sub></b>, for mean density of seawater and gravity acceleration as a function of geographic latitude<br>
+- <b>h<sub>fg</sub></b>, for mean density of freshwater and constant gravity acceleration<br>
+- <b>h<sub>f</sub></b>, for mean density of freshwater and gravity acceleration as a function of geographic latitude<br>
+- <b>h<sub>P0</sub></b>, with water density calculated for the given temperature and salinity under atmospheric pressure and gravity acceleration as a function of geographic latitude<br>
+- <b>h<sub>s</sub></b>, with water density calculated for the given temperature and salinity in midpoint (half of given pressure), gravity acceleration as a function of geographic latitude<br>
+- <b>h<sub>&sigma;</sub></b>, considering given temperature, salinity, gravity acceleration variance with latitude, with dividing the pressure range (<b>P-P<sub>0</sub></b>)
 by <b>N</b> parts and calculating the depth as a following sum:
 <br><br>
 <b>h<sub>&sigma;</sub>=&Delta;P/g&sum;1/(&rho;(P<sub>0</sub>+&Delta;Pi))   </b>
@@ -157,17 +160,32 @@ by <b>N</b> parts and calculating the depth as a following sum:
 
  <tr>
    <td>Depth</td>
+   <td><b>h<sub>swg</sub></b></td>
+   <td><p id="depth_swg"></p></td>
+   <td>m</td>
+   <td>For <b>&rho;=1023.6<sup><a href="#footnote3">[3]</sup></a> kg/m<sup>3</sup>, g=9.80665<sup><a href="#footnote4">[4]</sup></a> m/s<sup>2</sup></b></td>
+ </tr>
+ <tr>
+   <td>Depth</td>
+   <td><b>h<sub>sw</sub></b></td>
+   <td><p id="depth_sw"></p></td>
+   <td>m</td>
+   <td>For <b>&rho;=1023.6<sup><a href="#footnote3">[3]</sup></a> kg/m<sup>3</sup>, g=g(&phi;)</b></td>
+ </tr>
+
+ <tr>
+   <td>Depth</td>
    <td><b>h<sub>fg</sub></b></td>
    <td><p id="depth_fg"></p></td>
    <td>m</td>
-   <td>For <b>&rho;=997 kg/m<sup>3</sup>, g=9.80665 m/s<sup>2</sup></b></td>
+   <td>For <b>&rho;=1000<sup><a href="#footnote5">[5]</sup></a> kg/m<sup>3</sup>, g=9.80665<sup><a href="#footnote4">[4]</sup></a> m/s<sup>2</sup></b></td>
  </tr>
  <tr>
    <td>Depth</td>
    <td><b>h<sub>f</sub></b></td>
    <td><p id="depth_f"></p></td>
    <td>m</td>
-   <td>For <b>&rho;=997 kg/m<sup>3</sup>, g=g(&phi;)</b></td>
+   <td>For <b>&rho;=1000<sup><a href="#footnote5">[5]</sup></a> kg/m<sup>3</sup>, g=g(&phi;)</b></td>
  </tr>
  <tr>
    <td>Depth</td>
@@ -192,8 +210,19 @@ by <b>N</b> parts and calculating the depth as a following sum:
  </tr>
 </table>
 <br>
-<br>
 <hr>
+
+<ol>
+    <li id="footnote1"><a href="https://en.wikipedia.org/wiki/Theoretical_gravity">Theoretical gravity on wikipedia</a>.
+    <li id="footnote2"><a href="http://earth-info.nga.mil/GandG/publications/tr8350.2/wgs84fin.pdf">Department of Defense World Geodetic System 1984 ― Its Definition and Relationships with Local Geodetic Systems,NIMA TR8350.2, 3rd ed., Tbl. 3.4, Eq. 4-1</a>
+    <li id="footnote3"><a href="https://doi.org/10.1016%2Fj.desal.2016.02.024">Nayar, Kishor G.; Sharqawy, Mostafa H.; Banchik, Leonardo D.; Lienhard V, John H. (July 2016). "Thermophysical properties of seawater: A review and new correlations that include pressure dependence". Desalination. 390: 1–24. </a>
+    <li id="footnote4"><a href="http://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication330e2008.pdf">Taylor, Barry N.; Thompson, Ambler, eds. (March 2008). The international system of units (SI) (Report). National Institute of Standards and Technology. p. 52. NIST special publication 330, 2008 edition.</a>
+    <li id="footnote5"><a href="https://www.simetric.co.uk/si_water.htm">Summary:- Mass, Weight, Density or Specific Gravity of water at various temperatures C and thermal coefficient of expansion of water</a>.
+
+
+
+</ol>
+<br>
 
 <script type="text/javascript">
 
@@ -324,8 +353,11 @@ by <b>N</b> parts and calculating the depth as a following sum:
       var midpoint_rho = waterDensity(t, (p + p0) / 2, s);
       var p0_rho = waterDensity(t, p0, s);
 
-      var h_fg = depthByPresure(p, p0, 997, 9.80665);
-      var h_f  = depthByPresure(p, p0, 997, g);
+      var h_swg = depthByPresure(p, p0, 1023.6, 9.80665);
+      var h_sw  = depthByPresure(p, p0, 1023.6, g);
+
+      var h_fg = depthByPresure(p, p0, 1000, 9.80665);
+      var h_f  = depthByPresure(p, p0, 1000, g);
       var h_p0 = depthByPresure(p, p0, p0_rho, g);
       var h_s = depthByPresure(p, p0, midpoint_rho, g);
       var h_sigma = depthByPressureSum_TConst(t, p, s, p0, n_i, g);
@@ -333,6 +365,10 @@ by <b>N</b> parts and calculating the depth as a following sum:
       document.getElementById('water_density').innerText = rho.toFixed(3);
       document.getElementById('speed_of_sound_UNESCO').innerText = vs.toFixed(2);
       document.getElementById('gravity_acceleration').innerText = g.toFixed(4);
+
+      document.getElementById('depth_swg').innerText = h_swg.toFixed(3);
+      document.getElementById('depth_sw').innerText = h_sw.toFixed(3);
+
       document.getElementById('depth_fg').innerText = h_fg.toFixed(3);
       document.getElementById('depth_f').innerText = h_f.toFixed(3);
       document.getElementById('depth_P0').innerText = h_p0.toFixed(3);
