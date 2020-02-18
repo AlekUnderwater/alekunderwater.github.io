@@ -154,26 +154,41 @@ by <b>N</b> parts and calculating the depth as a following sum:
    <td></td>
  </tr>
 
+
  <tr>
    <td>Depth</td>
-   <td><b>h<sub>1000</sub></b></td>
-   <td><p id="depth_1000"></p></td>
+   <td><b>h<sub>fg</sub></b></td>
+   <td><p id="depth_fg"></p></td>
    <td>m</td>
-   <td>With <b>&rho;=1000 kg/m<sup>3</sup></td>
+   <td>For <b>&rho;=997 kg/m<sup>3</sup>, g=9.80665 m/s<sup>2</sup></b></td>
+ </tr>
+ <tr>
+   <td>Depth</td>
+   <td><b>h<sub>f</sub></b></td>
+   <td><p id="depth_f"></p></td>
+   <td>m</td>
+   <td>For <b>&rho;=997 kg/m<sup>3</sup>, g=g(&phi;)</b></td>
+ </tr>
+ <tr>
+   <td>Depth</td>
+   <td><b>h<sub>P0</sub></b></td>
+   <td><p id="depth_P0"></p></td>
+   <td>m</td>
+   <td><b>&rho;=&rho;(t,P<sub>0</sub>,s), g=g(&phi;)</b></td>
  </tr>
  <tr>
    <td>Depth</td>
    <td><b>h<sub>s</sub></b></td>
    <td><p id="depth_s"></p></td>
    <td>m</td>
-   <td>With <b>&rho;</b> estimated for the point where <b>P=P/2</b></td>
+   <td><b>&rho;=&rho;(t,(P+P<sub>0</sub>)/2,s), g=g(&phi;)</b></td>
  </tr>
  <tr>
    <td>Depth</td>
    <td><b>h<sub>&sigma;</sub></b></td>
    <td><p id="depth_sigma"></p></td>
    <td>m</td>
-   <td>With integration by <b>&Delta;P</b></td>
+   <td>With integration by <b>&Delta;P, g=g(&phi;)</b></td>
  </tr>
 </table>
 <br>
@@ -307,14 +322,20 @@ by <b>N</b> parts and calculating the depth as a following sum:
       var g = gravityAcceleration(phi);
 
       var midpoint_rho = waterDensity(t, (p + p0) / 2, s);
-      var h_1000 = depthByPresure(p, p0, 1000, g);
+      var p0_rho = waterDensity(t, p0, s);
+
+      var h_fg = depthByPresure(p, p0, 997, 9.80665);
+      var h_f  = depthByPresure(p, p0, 997, g);
+      var h_p0 = depthByPresure(p, p0, p0_rho, g);
       var h_s = depthByPresure(p, p0, midpoint_rho, g);
       var h_sigma = depthByPressureSum_TConst(t, p, s, p0, n_i, g);
 
       document.getElementById('water_density').innerText = rho.toFixed(3);
       document.getElementById('speed_of_sound_UNESCO').innerText = vs.toFixed(2);
       document.getElementById('gravity_acceleration').innerText = g.toFixed(4);
-      document.getElementById('depth_1000').innerText = h_1000.toFixed(3);
+      document.getElementById('depth_fg').innerText = h_fg.toFixed(3);
+      document.getElementById('depth_f').innerText = h_f.toFixed(3);
+      document.getElementById('depth_P0').innerText = h_p0.toFixed(3);
       document.getElementById('depth_s').innerText = h_s.toFixed(3);
       document.getElementById('depth_sigma').innerText = h_sigma.toFixed(3);
     }
