@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<style type="text/css">
+  font: Calibri;
+  table, th, td {
+    border: 1px solid gray;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 5px;
+    text-align: left;
+  }
+  tr:nth-child(even) {
+    background-color: #eee;
+  }
+  tr:nth-child(odd) {
+   background-color: #fff;
+  }
+  th {
+    background-color: black;
+    color: white;
+  }
+</style>
+</head>
+
+<body>
+
+<h2>Water depth calculator</h2>
+<hr>
+<p>
+<b>Warning!</b><br>
+If you calculate water depth assuming constant water density and constant gravity acceleration, you do it in a wrong way.<br>
+Take a look at this simple water depth calculator to make you estimations more precise and accurate.<br>
+</p>
+<p>
+<b>Brief description</b><br>
+In this simplified calculation of water properties, we consider homogenous
+temperature and salinity in the whole water body.<br>
+<br>In situ water density calculates according to
+<i>(Millero et al 1980, deep-sea res.,27a,255-264, jpots ninth report 1978,tenth report 1980)</i>.
+The speed of sound calculates according to <i>(the UNESCO equation: Chen and Millero (1977)</i>.
+Both water density and speed of sound are presented as functions of water
+temperature <b>t</b>, pressure <b>P</b> and water salinity <b>s</b>.
+Since the height of the water column <b>h</b> is connected with water density
+<b>&rho;</b>, gravity acceleration <b>g</b>
+and hydrostatic pressure <b>P</b> in the hydrostatic pressure equation as:
+<br><br>
+<b>P=&rho;gh</b>
+<br><br>
+The depth can be estimated as follows:
+<br><br>
+<b>h=(P-P<sub>0</sub>)/&rho;g</b>
+<br><br>
+Where <b>P<sub>0</sub></b> is the atmospheric pressure above the water surface.<br>
+Gravity constant <b>g</b> on the sea level depends on geographic latitude <b>&phi;</b>
+and calculates from the WGS84 gravity formula<sup><a href="#footnote1">[1]</a></sup><sup><a href="#footnote2">[2]</a></sup>
+<br><br>
+
+In this simplified calculation we calculate a few values for the depth:<br>
+- <b>h<sub>swg</sub></b>, for mean density of seawater and constant gravity acceleration<br>
+- <b>h<sub>sw</sub></b>, for mean density of seawater and gravity acceleration as a function of geographic latitude<br>
+- <b>h<sub>fg</sub></b>, for mean density of freshwater and constant gravity acceleration<br>
+- <b>h<sub>f</sub></b>, for mean density of freshwater and gravity acceleration as a function of geographic latitude<br>
+- <b>h<sub>P0</sub></b>, with water density calculated for the given temperature and salinity under atmospheric pressure and gravity acceleration as a function of geographic latitude<br>
+- <b>h<sub>s</sub></b>, with water density calculated for the given temperature and salinity in midpoint (half of given pressure), gravity acceleration as a function of geographic latitude<br>
+- <b>h<sub>&sigma;</sub></b>, considering given temperature, salinity, gravity acceleration variance with latitude, with dividing the pressure range (<b>P-P<sub>0</sub></b>)
+by <b>N</b> parts and calculating the depth as a following sum:
+<br><br>
+<b>h<sub>&sigma;</sub>=&Delta;P/g&sum;1/(&rho;(P<sub>0</sub>+&Delta;Pi))   </b>
+<br><br>
+
+</p>
+<table id="in_values_tbl">
+<caption><b>Input values</b></caption>
+ <tr>
+   <th>Parameter</th>
+   <th>Notation</th>
+   <th>Value</th>
+   <th>Range</th>
+   <th>Units</th>
+ </tr>
+ <tr>
+   <td>Water temperature</td>
+   <td><b>t</b></td>
+   <td><input type="number" step="0.1" value="10" min="-4" max="40" name="water_temperature_C" id="water_temp_input" onchange="checkWTemp()"></td>
+   <td>-4 .. 40</td>
+   <td>°C</td>
+ </tr>
+ <tr>
+   <td>Atmosperic pressure</td>
+   <td><b>P<sub>0</sub></b></td>
+   <td><input type="number" step="0.01" value="1013.25" min="880" max="1085" name="atmospheric_pressure_mBar" id="atmospheric_pressure_input" onchange="checkAtmP()"></td>
+   <td>870 .. 1090</td>
+   <td>mBar</td>
+ </tr>
+ <tr>
+   <td>Hydrostatic pressure</td>
+   <td><b>P</b></td>
+   <td><input type="number" step="0.1" value="100000" min="1000" max="1000000" name="hydrostatic_pressure_mBar" id="hydrostatic_pressure_input" onchange="checkHydP()"></td>
+   <td>10<sup>3</sup> .. 10<sup>6</sup></td>
+   <td>mBar</td>
+ </tr>
+ <tr>
+   <td>Geographic latitude</td>
+   <td><b>&phi;</b></td>
+   <td><input type="number" step="0.001" value="48" min="-90" max="90" name="atmospheric_pressure_mBar" id="geographic_latitude_input" onchange="checkLat()"></td>
+   <td>-90 .. 90</td>
+   <td>°</td>
+ </tr>
+ <tr>
+   <td>Water salinity</td>
+   <td><b>s</b></td>
+   <td><input type="number" step="0.1" value="38" min="0" max="42" name="water_salinity_PSU" id="water_salinity_input" onchange="checkWS()"></td>
+   <td>0 .. 42</td>
+   <td>PSU</td>
+ </tr>
+ <tr>
+   <td>Number of pressure intervals</td>
+   <td><b>N</b></td>
+   <td><input type="number" value="100" min="1" max="10000" name="N_integration" id="N_integration_input" onchange="checkN()"></td>
+   <td>1 .. 1E4</td>
+   <td></td>
+ </tr>
+</table>
+
+<br>
+<div>
+    <button id="simplified_calc" onclick="updateWaterProperties()">CALCULATE</button>
+</div>
+<br>
+
+<table id="out_values_tbl">
+<caption><b>Output values</b></caption>
+ <tr>
+   <th>Parameter</th>
+   <th>Notation</th>
+   <th>Value</th>
+   <th>Units</th>
+   <th>Description</th>
+ </tr>
+ <tr>
+   <td>Water density</td>
+   <td><b>&rho;</b></td>
+   <td><p id="water_density"></p></td>
+   <td>kg/m<sup>3</sup></td>
+   <td>For the point with given <b>P</b> and <b>t</b></td>
+ </tr>
+ <tr>
+   <td>Speed of sound</td>
+   <td><b>&nu;</b></td>
+   <td><p id="speed_of_sound_UNESCO"></p></td>
+   <td>m/s</td>
+   <td>For the point with given <b>P</b> and <b>t</b></td>
+ </tr>
+ <tr>
+   <td>Gravity acceleration</td>
+   <td><b>g</b></td>
+   <td><p id="gravity_acceleration"></p></td>
+   <td>m/s<sup>2</sup></td>
+   <td></td>
+ </tr>
+
+
+ <tr>
+   <td>Depth</td>
+   <td><b>h<sub>swg</sub></b></td>
+   <td><p id="depth_swg"></p></td>
+   <td>m</td>
+   <td>For <b>&rho;=1023.6<sup><a href="#footnote3">[3]</sup></a> kg/m<sup>3</sup>, g=9.80665<sup><a href="#footnote4">[4]</sup></a> m/s<sup>2</sup></b></td>
+ </tr>
+ <tr>
+   <td>Depth</td>
+   <td><b>h<sub>sw</sub></b></td>
+   <td><p id="depth_sw"></p></td>
+   <td>m</td>
+   <td>For <b>&rho;=1023.6<sup><a href="#footnote3">[3]</sup></a> kg/m<sup>3</sup>, g=g(&phi;)</b></td>
+ </tr>
+
+ <tr>
+   <td>Depth</td>
+   <td><b>h<sub>fg</sub></b></td>
+   <td><p id="depth_fg"></p></td>
+   <td>m</td>
+   <td>For <b>&rho;=1000<sup><a href="#footnote5">[5]</sup></a> kg/m<sup>3</sup>, g=9.80665<sup><a href="#footnote4">[4]</sup></a> m/s<sup>2</sup></b></td>
+ </tr>
+ <tr>
+   <td>Depth</td>
+   <td><b>h<sub>f</sub></b></td>
+   <td><p id="depth_f"></p></td>
+   <td>m</td>
+   <td>For <b>&rho;=1000<sup><a href="#footnote5">[5]</sup></a> kg/m<sup>3</sup>, g=g(&phi;)</b></td>
+ </tr>
+ <tr>
+   <td>Depth</td>
+   <td><b>h<sub>P0</sub></b></td>
+   <td><p id="depth_P0"></p></td>
+   <td>m</td>
+   <td><b>&rho;=&rho;(t,P<sub>0</sub>,s), g=g(&phi;)</b></td>
+ </tr>
+ <tr>
+   <td>Depth</td>
+   <td><b>h<sub>s</sub></b></td>
+   <td><p id="depth_s"></p></td>
+   <td>m</td>
+   <td><b>&rho;=&rho;(t,(P+P<sub>0</sub>)/2,s), g=g(&phi;)</b></td>
+ </tr>
+ <tr>
+   <td>Depth</td>
+   <td><b>h<sub>&sigma;</sub></b></td>
+   <td><p id="depth_sigma"></p></td>
+   <td>m</td>
+   <td>With integration by <b>&Delta;P, g=g(&phi;)</b></td>
+ </tr>
+</table>
+<br>
+<hr>
+
+<ol>
+    <li id="footnote1"><a href="https://en.wikipedia.org/wiki/Theoretical_gravity">Theoretical gravity on wikipedia</a>.
+    <li id="footnote2"><a href="http://earth-info.nga.mil/GandG/publications/tr8350.2/wgs84fin.pdf">Department of Defense World Geodetic System 1984 ― Its Definition and Relationships with Local Geodetic Systems,NIMA TR8350.2, 3rd ed., Tbl. 3.4, Eq. 4-1</a>
+    <li id="footnote3"><a href="https://doi.org/10.1016%2Fj.desal.2016.02.024">Nayar, Kishor G.; Sharqawy, Mostafa H.; Banchik, Leonardo D.; Lienhard V, John H. (July 2016). "Thermophysical properties of seawater: A review and new correlations that include pressure dependence". Desalination. 390: 1–24. </a>
+    <li id="footnote4"><a href="http://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication330e2008.pdf">Taylor, Barry N.; Thompson, Ambler, eds. (March 2008). The international system of units (SI) (Report). National Institute of Standards and Technology. p. 52. NIST special publication 330, 2008 edition.</a>
+    <li id="footnote5"><a href="https://www.simetric.co.uk/si_water.htm">Summary:- Mass, Weight, Density or Specific Gravity of water at various temperatures C and thermal coefficient of expansion of water</a>.
+</ol>
+<br>
+
+(C) Alek Dikarev, 2020<br>
+For bug reports, suggestions and questions, please <a href="https://github.com/AlekUnderwater">reach me</a><br>
+
+<script type="text/javascript">
+
+    // Calculates gravity acceleration for the given latitude
+    // WGS84 gravity formula
+    function gravityAcceleration(phi) {
+     phi_sq = Math.pow(Math.sin(phi * Math.PI / 180.0), 2);
+     return 9.7803253359 * ((1 + 0.00193185265241 * phi_sq) / Math.sqrt(1 - 0.00669437999013 * phi_sq));
+   }
+
+    // Calculates depth (distance from the water surface to the point with given pressure)
+    // rho - water water density, kg/m^3
+    // p0 - atmospheric pressure, mBar
+    // g - gravity acceleration, m/s^2
+    function depthByPresure(p, p0, rho, g) {
+      return (100.0 * (p - p0) / (rho * g));
+    }
+
+    function depthByPressureSum_TConst(t, p, s, p0, N_n, g) {
+      var dp = (p - p0) / N_n;
+      var h_e = 0;
+
+      for (n = 0; n < N_n; n++)
+      {
+         h_e = h_e + 1/waterDensity(t, p0 + n * dp, s);
+      }
+
+      return 100.0 * h_e * dp / g;
+    }
+
+    // Calculates speed of sound in water
+    // According to the UNESCO equation: Chen and Millero (1977)
+    // t - temperature, °C
+    // p - pressure, mBar
+    // s - salinity, PSU
+    // returns speed of sound in water, in m/s
+    function speedOfSound(t, p, s) {
+
+      var t2 = t * t;
+      var t3 = t2 * t;
+      var t4 = t3 * t;
+      p = p / 1000.0;
+      var p2 = p * p;
+      var p3 = p2 * p;
+
+      var Cw = (1402.388 + 5.03830 * t + -5.81090E-2 * t2 + 3.3432E-4 * t3 + -1.47797E-6 * t4 + 3.1419E-9 * t4 * t) +
+                 (0.153563 + 6.8999E-4 * t + -8.1829E-6 * t2 + 1.3632E-7 * t3 + -6.1260E-10 * t4) * p +
+                 (3.1260E-5 +  -1.7111E-6 * t +  2.5986E-8 * t2 + -2.5353E-10 * t3 + 1.0415E-12 * t4) * p2 +
+                 (-9.7729E-9 + 3.8513E-10 * t + -2.3654E-12 * t2) * p3;
+
+      var A = (1.389 + -1.262E-2 * t + 7.166E-5 * t2 + 2.008E-6 * t3 + -3.21E-8 * t4) +
+                (9.4742E-5 + -1.2583E-5 * t + -6.4928E-8 * t2 + 1.0515E-8 * t3 + -2.0142E-10 * t4) * p +
+                (-3.9064E-7 + 9.1061E-9 * t + -1.6009E-10 * t2 + 7.994E-12 * t3) * p2 +
+                (1.100E-10 + 6.651E-12 * t + -3.391E-13 * t2) * p3;
+
+      var B = -1.922E-2 + -4.42E-5 * t + (7.3637E-5 + 1.7950E-7 * t) * p;
+
+      var D = 1.727E-3 + -7.9836E-6 * p;
+
+      return Cw + A * s + B * Math.sqrt(s * s * s) + D * s * s;
+    }
+
+
+    // Calculates water density as a function of temperature, pressure and salinity
+    // According to:
+    // calculates in situ density of water
+    // millero et al 1980, deep-sea res.,27a,255-264
+    // jpots ninth report 1978,tenth report 1980
+    // t - temperature, °C
+    // p - pressure, mBar
+    // s - salinity, PSU
+    // returns water density in kg/m^3
+    function waterDensity(t, p, s) {
+      p = p / 1000.0;
+      var sr = Math.sqrt(Math.abs(s));
+
+      var sig = (4.8314E-4 * s +
+                 ((-1.6546E-6 * t + 1.0227E-4) * t - 5.72466E-3) * sr +
+                 (((5.3875E-9 * t - 8.2467E-7) * t + 7.6438E-5) * t - 4.0899E-3) * t + 0.824493) * s +
+                ((((6.536332E-9 * t - 1.120083E-6) * t + 1.001685E-4) * t - 9.095290E-3) * t + 6.793952E-2) * t - 0.157406;
+
+      var b = ((9.1697E-10 * t + 2.0816E-8) * t - 9.9348E-7) * s + (5.2787E-8 * t - 6.12293E-6) * t + 8.50935E-5;
+
+      var k0 = (((-5.3009E-4 * t + 1.6483E-2) * t + 7.944E-2) * sr +
+                ((-6.1670E-5 * t + 1.09987E-2) * t - 0.603459) * t + 54.6746) * s +
+               (((-5.155288E-5 * t + 1.360477E-2) * t - 2.327105) * t + 148.4206) * t + 19652.21;
+
+      var a = (1.91075E-4 * sr + (-1.6078E-6 * t - 1.0981E-5) * t + 2.2838E-3) * s +
+              ((-5.77905E-7 * t + 1.16092E-4) * t + 1.43713E-3) * t + 3.239908;
+
+      var k = (b * p + a) * p + k0;
+      return 1000.0 + (k * sig + 1000.0 * p) / (k - p);
+    }
+
+    function numInSetErrState(minV, maxV, elementID, disableElementID) {
+      var val = parseFloat(document.getElementById(elementID).value);
+      if ((val >= minV) && (val <= maxV)) {
+        document.getElementById(elementID).style.border.color = "default";
+        document.getElementById(disableElementID).disabled = false;
+        return true;
+      }
+      else {
+        document.getElementById(elementID).style.border.color = "salmon";
+        document.getElementById(disableElementID).disabled = true;
+        return false;
+      }
+    }
+
+    function checkWTemp() { numInSetErrState(-4.0, 40.0, "water_temp_input", "simplified_calc"); }
+    function checkAtmP() { numInSetErrState(890.0, 1085.0, "atmospheric_pressure_input", "simplified_calc"); }
+    function checkHydP() { numInSetErrState(1E3, 1E6, "hydrostatic_pressure_input", "simplified_calc"); }
+    function checkLat() { numInSetErrState(-90.0, 90.0, "geographic_latitude_input", "simplified_calc"); }
+    function checkWS() { numInSetErrState(0.0, 42.0, "water_salinity_input", "simplified_calc"); }
+    function checkN() { numInSetErrState(1, 10000, "N_integration_input", "simplified_calc"); }
+
+    function updateWaterProperties() {
+      var t   = parseFloat(document.getElementById("water_temp_input").value);
+      var p   = parseFloat(document.getElementById("hydrostatic_pressure_input").value);
+      var p0  = parseFloat(document.getElementById("atmospheric_pressure_input").value);
+      var s   = parseFloat(document.getElementById("water_salinity_input").value);
+      var phi = parseFloat(document.getElementById("geographic_latitude_input").value);
+      var n_i = parseFloat(document.getElementById("N_integration_input").value);
+
+      var rho = waterDensity(t, p, s);
+      var vs = speedOfSound(t, p, s);
+      var g = gravityAcceleration(phi);
+
+      var midpoint_rho = waterDensity(t, (p + p0) / 2, s);
+      var p0_rho = waterDensity(t, p0, s);
+
+      var h_swg = depthByPresure(p, p0, 1023.6, 9.80665);
+      var h_sw  = depthByPresure(p, p0, 1023.6, g);
+
+      var h_fg = depthByPresure(p, p0, 1000, 9.80665);
+      var h_f  = depthByPresure(p, p0, 1000, g);
+      var h_p0 = depthByPresure(p, p0, p0_rho, g);
+      var h_s = depthByPresure(p, p0, midpoint_rho, g);
+      var h_sigma = depthByPressureSum_TConst(t, p, s, p0, n_i, g);
+
+      document.getElementById('water_density').innerText = rho.toFixed(3);
+      document.getElementById('speed_of_sound_UNESCO').innerText = vs.toFixed(2);
+      document.getElementById('gravity_acceleration').innerText = g.toFixed(4);
+
+      document.getElementById('depth_swg').innerText = h_swg.toFixed(3);
+      document.getElementById('depth_sw').innerText = h_sw.toFixed(3);
+
+      document.getElementById('depth_fg').innerText = h_fg.toFixed(3);
+      document.getElementById('depth_f').innerText = h_f.toFixed(3);
+      document.getElementById('depth_P0').innerText = h_p0.toFixed(3);
+      document.getElementById('depth_s').innerText = h_s.toFixed(3);
+      document.getElementById('depth_sigma').innerText = h_sigma.toFixed(3);
+    }
+
+    updateWaterProperties();
+</script>
+</body>
+</html>
