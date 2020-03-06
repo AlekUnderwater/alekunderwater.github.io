@@ -1,7 +1,7 @@
 <head>
 <title>Proper depth calculator</title>
 <link href="style.css" rel="stylesheet" type="text/css">
-<script src="https://ucnl.github.io/UCNLPhysics/JS/ucnlphysics.js" type="text/javascript"></script>
+<script src="ucnlphysics.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -310,7 +310,7 @@ the number of measurements of temperature and salinity made in different depths.
  <tr>
    <td>Number of points</td>
    <td><b><i>N<sub>tsp</sub></i></b></td>
-   <td><input type="number" step="1" value="11" min="1" max="100" name="c3_Nt" id="c3_Ntsp_input" onchange="c3_check_Ntsp()"></td>
+   <td><input type="number" step="1" value="12" min="1" max="100" name="c3_Nt" id="c3_Ntsp_input" onchange="c3_check_Ntsp()"></td>
    <td></td>
  </tr>
  <tr>
@@ -587,10 +587,6 @@ For bug reports, suggestions and questions, please feel free to <a href="https:/
 
     setFloat("c3_h_ts", h_ts, 3);
   }
-
-
-
-
 
    c1_run();
    c2_run();
