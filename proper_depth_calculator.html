@@ -321,7 +321,7 @@ the number of measurements of temperature and salinity made in different depths.
  </tr>
 </table>
 
-<p><input type="button" id="update_table_btn" value="RESET TABLE" onclick="updateTable()"/></p>
+<p><input type="button" id="update_table_btn" value="RESET TABLE" onclick="updateTable_And_Set_TS_Const()"/></p>
 <hr>
 <p><input type="button" id="set_northern_ocean" value="Set typical northern pacific profile (39°N, 152°W)" onclick="set_Example_Northern_pacific_TS_profile()"/></p>
 <p><input type="button" id="set_southern_atlantic_ocean" value="Set typical southern atlantic profile (20°S)" onclick="set_Example_Southern_Atlantic_TS_profile()"/></p>
@@ -422,10 +422,6 @@ For bug reports, suggestions and questions, please feel free to <a href="https:/
     var z_step = parseFloat(document.getElementById('c3_z_step_input').value);
     var tspTable = document.getElementById('tsProfileTable');
 
-    var p0 = parseFloat(document.getElementById('c1_p0_mBar_input').value);
-    var phi = parseFloat(document.getElementById('c1_phi_deg_input').value);
-    var g = PHX_gravity_constant_WGS84_calc(phi);
-
     for (var n = tspTable.rows.length - 1; n > 0; n--) {
       tspTable.deleteRow(n);
     }
@@ -455,6 +451,13 @@ For bug reports, suggestions and questions, please feel free to <a href="https:/
     }
   }
 
+  function updateTable_And_Set_TS_Const() {
+    updateTable();
+    t   = parseFloat(document.getElementById("c1_t_C_input").value);
+    s   = parseFloat(document.getElementById("c1_s_PSU_input").value);
+    set_TS_Profile_Const(t, s);
+  }
+
   function getProfile() {
     var profile = [];
     var tspTable = document.getElementById('tsProfileTable');
@@ -470,6 +473,17 @@ For bug reports, suggestions and questions, please feel free to <a href="https:/
     return profile;
   }
 
+  function set_TS_Profile_Const(t, s) {
+
+    var tspTable = document.getElementById('tsProfileTable');
+    var rowCnt = tspTable.rows.length;
+
+    for (var n = 1; n < rowCnt; n++) {
+      tspTable.rows.item(n).cells[2].childNodes[0].value = t;
+      tspTable.rows.item(n).cells[3].childNodes[0].value = s;
+    }
+  }
+
   function set_TS_Profile(phi, z_step, ts_profile) {
     var p_length = ts_profile.length;
     document.getElementById('c1_phi_deg_input').value = phi;
@@ -481,7 +495,6 @@ For bug reports, suggestions and questions, please feel free to <a href="https:/
     var rowCnt = tspTable.rows.length;
 
     for (var n = 1; n < rowCnt; n++) {
-
       tspTable.rows.item(n).cells[2].childNodes[0].value = ts_profile[n - 1].t;
       tspTable.rows.item(n).cells[3].childNodes[0].value = ts_profile[n - 1].s;
     }
@@ -592,7 +605,7 @@ For bug reports, suggestions and questions, please feel free to <a href="https:/
    c2_run();
 
    createTable();
-   updateTable();
+   updateTable_And_Set_TS_Const();
    c3_run();
 
 </script>
