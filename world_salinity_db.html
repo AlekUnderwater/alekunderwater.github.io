@@ -20,36 +20,25 @@ var getJSON = function(url, callback) {
     xhr.send();
 };
 
-getJSON('https://alekunderwater.github.io/wosdb.json',
+getJSON('https://alekunderwater.github.io/wosdb_lon_lat_sty.json',
 function(err, data) {
   if (err !== null) {
     console.log(err);
   } else {
-    wosDB = {};
-
-    for (var idx = 0, item; idx < data.length; idx++) {
-      item = data[i];
-      wosDB[item.id] = item;
-    }
-
+    wosDB = data;
   }
 });
 
 function onSearch() {
-  t_lt = document.getElementById("lat_deg_input").value;
-  t_ln = document.getElementById("lon_deg_input").value;
 
-  key = t_ln.toString() + "," + t_ln.toString();
+  t_lt = document.getElementById("lat_deg_input").value.toString();
+  t_ln = document.getElementById("lon_deg_input").value.toString();
 
-  try {
-    sty = wosDB[key];
-
-    document.getElementById("s_PSU_out").innerText = sty.toFixed(3);
-  } catch (e) {
-
+  if (t_ln in wosDB) {
+    if (t_lt in wosDB[t_ln]) {
+      document.getElementById("s_PSU_out").innerText = sty.toFixed(3);
+    }
   }
-
-
 }
 
 
