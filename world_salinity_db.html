@@ -47,14 +47,14 @@ function getDiv05(val, max) {
 function getNearestKey(key, maxKey, minKey, step, db) {
   t_key = key;
 
-  while ((t_key < maxKey) && (!t_key.toString() in db)) {
+  while ((t_key < maxKey) && (!(t_key.toString() in db))) {
     t_key += step;
   }
 
-  if (!t_key.toString() in db)) {
+  if (!(t_key.toString() in db))) {
 
     t_key = key;
-    while ((t_key > minKey) && (!t_key.toString() in db)) {
+    while ((t_key > minKey) && (!(t_key.toString() in db))) {
       t_key -= step;
     }
   }
