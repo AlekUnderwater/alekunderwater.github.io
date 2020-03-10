@@ -38,7 +38,8 @@ function getDiv05(val, max) {
 }
 
 function getNearestKey(key, minKey, maxKey, step, db) {
-  t_key = key;
+
+  var t_key = key;
 
   while ((t_key < maxKey) && (!(t_key.toString() in db))) {
     t_key += step;
@@ -56,7 +57,7 @@ function getNearestKey(key, minKey, maxKey, step, db) {
 }
 
 function onSearch() {
-
+x
   t_lt = getDiv05(document.getElementById("lat_deg_input").value, 89.5);
   t_ln = getDiv05(document.getElementById("lon_deg_input").value, 179.5);
 
