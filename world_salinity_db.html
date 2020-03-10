@@ -29,22 +29,15 @@ function(err, data) {
   }
 });
 
-function round_to_prec(x, prec) {
-    var y = +x + (prec === undefined ? 0.5 : prec / 2);
-    return y - (y % (prec === undefined ? 1 : + prec));
-}
-
 function getDiv05(val, max) {
-  var result = round_to_prec(val, 0.5);
-  if ((result - Math.floor(result)) !== 0) {
-    result += 0.5;
-    if (result > max) {
+  var result = Math.round(val);
+  result += 0.5;
+  if (result > max) {
       result -= 1;
-    }
   }
 }
 
-function getNearestKey(key, maxKey, minKey, step, db) {
+function getNearestKey(key, minKey, maxKey, step, db) {
   t_key = key;
 
   while ((t_key < maxKey) && (!(t_key.toString() in db))) {
@@ -67,8 +60,8 @@ function onSearch() {
   t_lt = getDiv05(document.getElementById("lat_deg_input").value, 89.5);
   t_ln = getDiv05(document.getElementById("lon_deg_input").value, 179.5);
 
-  ln_key = getNearestKey(t_ln, 179.5, -179.5, 1, wosDB);
-  lt_key = getNearestKey(t_lt, 89.5, -89.5, 1, wosDB[ln_key.toString()]);
+  ln_key = getNearestKey(t_ln, -179.5, 179.5, 1, wosDB);
+  lt_key = getNearestKey(t_lt, -89.5, 89.5, 1, wosDB[ln_key.toString()]);
 
   document.getElementById("s_PSU_out").innerText = wosDB[ln_key.toString()][lt_key.toString()].toFixed(3);
 
