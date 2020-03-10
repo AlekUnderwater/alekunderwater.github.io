@@ -68,8 +68,8 @@ function onSearch() {
   ln_key_s = ln_key.toString();
   lt_key_s = lt_key.toString();
 
-  document.getElementById("s_PSU_out").innerText = wosDB[ln_key_s][lt_key_s].toFixed(3) +
-   " (" + ln_key_s + ", " + lt_key_s + ")";
+  document.getElementById("s_PSU_out").innerText = wosDB[ln_key_s][lt_key_s].toFixed(3);
+  document.getElementById("npoint_out").innerText = "(" + ln_key_s + ", " + lt_key_s + ")";
 }
 
 
@@ -83,6 +83,7 @@ function onSearch() {
 
 <i>Warning! All the data presented in this demo are taken from the NOAA World
  ocean database<a href="#footnote1">[1]</a> for educational purposes only!</i>
+<br>
 
 <table id="in_values_tbl">
  <tr>
@@ -102,6 +103,12 @@ function onSearch() {
    <td><input type="number" step="0.5" value="48.5" min="-175" max="175" name="lon_deg" id="lon_deg_input"></td>
    <td>-90 .. 90</td>
    <td>°</td>
+ </tr>
+ <tr>
+   <td>Nearest point (lon, lat)</td>
+   <td><b><a id="npoint_out"></a></b></td>
+   <td></td>
+   <td></td>
  </tr>
  <tr>
    <td>Salinity</td>
