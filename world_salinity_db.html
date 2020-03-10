@@ -30,7 +30,7 @@ function(err, data) {
 });
 
 function getDiv05(val, max) {
-  var result = Math.round(val);
+  var result = Math.trunc(val);
   result += 0.5;
   if (result > max) {
       result -= 1;
