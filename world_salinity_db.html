@@ -68,7 +68,8 @@ function onSearch() {
   ln_key_s = ln_key.toString();
   lt_key_s = lt_key.toString();
 
-  document.getElementById("s_PSU_out").innerText = wosDB[ln_key_s][lt_key_s].toFixed(3);
+  document.getElementById("s_PSU_out").innerText = wosDB[ln_key_s][lt_key_s].toFixed(3) +
+   " (" + ln_key_s + ", " + lt_key_s + ")";
 }
 
 
@@ -79,6 +80,9 @@ function onSearch() {
 <body>
 <h1>World ocean salinity database</h1>
 <hr>
+
+<i>Warning! All the data presented in this demo are taken from the NOAA World
+ ocean database<a href="#footnote1">[1]</a> for educational purposes only!</i>
 
 <table id="in_values_tbl">
  <tr>
@@ -113,12 +117,9 @@ function onSearch() {
     <button id="search" onclick="onSearch()">Search</button>
 </div>
 
-
 <ol>
-<li id="footnote1"><a href="https://darchive.mblwhoilibrary.org/bitstream/handle/1912/2470/059832eb.pdf">Algorithms for computation of fundamental properties of seawater.
-Unesco technical papers in marine science vol. 44, 1983</a>.
+<li id="footnote1"><a href="https://www.nodc.noaa.gov/OC5/indprod.html">NOAA World Ocean Database and World Ocean Atlas Series</a>.
 </ol>
-
 
 <hr>
 (C) Alek Dikarev, 2020<br>
