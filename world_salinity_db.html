@@ -68,7 +68,7 @@ function onSearch() {
   t_ln = getDiv05(document.getElementById("lon_deg_input").value, 179.5);
 
   ln_key = getNearestKey(t_ln, 179.5, -179.5, 1, wosDB);
-  lt_key = getNearestKey(ln_key, 89.5, -89.5, 1, wosDB[ln_key.toString()]);
+  lt_key = getNearestKey(t_lt, 89.5, -89.5, 1, wosDB[ln_key.toString()]);
 
   document.getElementById("s_PSU_out").innerText = wosDB[ln_key.toString()][lt_key.toString()].toFixed(3);
 
