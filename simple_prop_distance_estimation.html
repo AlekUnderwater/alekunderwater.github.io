@@ -166,7 +166,7 @@ function calculate() {
 <h2>0. Brief description. Very basic theory</h2>
 
 We want to estimate the distance at which, for a given pressure <b><i>P<sub>TX</sub></i></b>
-developed by a underwater acoustic transmitting antenna at a given frequency
+developed by an underwater acoustic transmitting antenna at a given frequency
 <b><i>f</i></b>, and a given noise pressure <b><i>P<sub>N</sub></i></b> at the
 receiving point, the residual pressure arriving at the receiver will have a
 given signal-to-noise ratio <b><i>SNR</i></b>.<br>
@@ -291,7 +291,7 @@ numerical methods is required. In this document the Newton's method is used.
  <tr>
    <td>Transmission sensitivity</td>
    <td><b><i>P<sub>T</sub></i></b></td>
-   <td><input type="number" step="0.5" value="1" min="0.5" max="10000" name="P_T_pa_V" id="P_T_pa_V_input" oninput="onPtx_update()"></td>
+   <td><input type="number" step="0.5" value="5" min="0.5" max="10000" name="P_T_pa_V" id="P_T_pa_V_input" oninput="onPtx_update()"></td>
    <td>0.5 .. 10000</td>
    <td>Pa/V</td>
    <td>On specified frequency <b><i>f</i><b></td>
@@ -315,7 +315,7 @@ numerical methods is required. In this document the Newton's method is used.
  <tr>
    <td>Desired SNR</td>
    <td><b><i>SNR</i></b></td>
-   <td><input type="number" step="0.1" value="0" min="-5" max="20" name="SNR_dB" id="SNR_dB_input" oninput="onSNRt_update()"></td>
+   <td><input type="number" step="0.01" value="4.77" min="-5" max="20" name="SNR_dB" id="SNR_dB_input" oninput="onSNRt_update()"></td>
    <td>-5 .. 20</td>
    <td>dB</td>
    <td>On the receiving point</td>
